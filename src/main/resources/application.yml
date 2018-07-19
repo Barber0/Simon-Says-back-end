@@ -1,0 +1,33 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url:
+    username:
+    password:
+    driver-class-name: com.mysql.jdbc.Driver
+
+  jpa:
+    hibernate:
+
+      ddl-auto: update
+    show-sql: true
+
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML5
+    check-template: true
+    servlet:
+      content-type: text/html
+    encoding: utf-8
+  servlet:
+    multipart:
+      max-file-size: 5000MB
+      max-request-size: 5000MB
+
+project:
+  keyName: api_key
+  storePath: /external_resource/

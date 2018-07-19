@@ -1,0 +1,117 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-thymeleaf-4.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Simon Says 最燃最皮的弹幕社区</title>
+</head>
+<body>
+<link rel="stylesheet" href="/css/mdui.min.css">
+<link rel="stylesheet" href="/swal.min.css">
+<script src="/js/mdui.min.js"></script>
+<script src="/vue.js"></script>
+<script src="/axios.min.js"></script>
+<script src="/swal.min.js"></script>
+<style>
+    body{
+        background-color: #eff3f5;
+    }
+    .main-panel{
+        margin-top: 100px;
+        width: 350px;
+        height: 450px;
+        padding: 10px 30px;
+    }
+    .headbar{
+        background-color: dodgerblue;
+        color: white;
+    }
+    .my-card{
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 0 5px gray;
+    }
+</style>
+
+<div class="mdui-toolbar headbar">
+    <span class="mdui-typo-title"><a style="color: white;text-decoration: none;" href="/"><i>Simon Says 最燃最皮的弹幕社区</i></a></span>
+    <div class="mdui-toolbar-spacer"></div>
+</div>
+<div class="mdui-container">
+    <div class="mdui-row">
+        <div class="mdui-col-xs-4 mdui-col-offset-xs-4" style="text-align: center">
+            <div class="my-card main-panel">
+                <div id="register-window">
+                    <div class="mdui-typo-display-1" style="margin-top: 20px;">注册</div>
+                    <div style="text-align: left;">
+                        <div class="mdui-textfield mdui-textfield-floating-label">
+                            <label class="mdui-textfield-label">用户名</label>
+                            <input class="mdui-textfield-input" type="text" v-model="uname" required/>
+                        </div>
+                        <div class="mdui-textfield mdui-textfield-floating-label">
+                            <label class="mdui-textfield-label">密码</label>
+                            <input class="mdui-textfield-input" v-model="pass" type="password" required/>
+                        </div>
+                        <div class="mdui-textfield mdui-textfield-floating-label">
+                            <label class="mdui-textfield-label">确认密码</label>
+                            <input class="mdui-textfield-input" v-model="check_pass" type="password" required/>
+                        </div>
+                        <div class="mdui-textfield mdui-textfield-floating-label">
+                            <label class="mdui-textfield-label">邮箱</label>
+                            <input class="mdui-textfield-input" v-model="email" type="text" required/>
+                        </div>
+                        <div style="margin-top: 20px">
+                            <button class="mdui-btn mdui-ripple" style="background-color: dodgerblue;width: 100%;color: #fff;" @click="submitUserInfo">注册</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = function (ev) {
+        axios.default.withCredentials = true
+        var getRequest = function (url,data,suc,fail) {
+            var key = localStorage.getItem("api_key")
+            axios.get(url,data,{headers:{"Authorization":key}}).then(suc).catch(fail)
+        }
+        var postRequest = function (url, data, suc, fail) {
+            var key = localStorage.getItem("api_key")
+            axios.post(url,data,{headers:{"Authorization":key}}).then(suc).catch(fail)
+        }
+        var app = new Vue({
+            el:'#register-window',
+            data:{
+                uname:'',
+                pass:'',
+                check_pass:'',
+                email:'',
+            },
+            methods:{
+                submitUserInfo:function () {
+                    var vm = this
+                    postRequest('/api/register/',{
+                        uname:vm.uname,
+                        pass:vm.pass,
+                        check_pass:vm.check_pass,
+                        email:vm.email
+                    },function (value) {
+                        if (value.data.code==200){
+                            localStorage.setItem("api_key",value.data.data)
+                            location = "/zone/"
+                        }else {
+                            swal("登录失败："+value.data.msg,'','error')
+                        }
+                    }, function (reason) {
+                        alert(reason)
+                        console.log(reason)
+                    })
+                }
+            }
+        })
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-thymeleaf-4.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Simon Says 最燃最皮的弹幕社区</title>
+</head>
+<body>
+
+<div th:replace="common/header :: div"></div>
+
+<style>
+    .main-panel{
+        margin-top: 100px;
+        width: 350px;
+        height: 400px;
+    }
+    .role-selector{
+        width: 100%;
+        height: 35px;
+        padding-left: 20px;
+        border-radius: 25px;
+    }
+    .my-card{
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 0 5px gray;
+    }
+</style>
+
+<div class="mdui-container">
+    <div class="mdui-row">
+        <div class="mdui-col-xs-4 mdui-col-offset-xs-4" style="text-align: center">
+            <div class="main-panel">
+                <div id="login-window">
+                    <div style="z-index: 1;">
+                        <img style="width: 110px;height: 110px;border-radius: 60px;border: 3px solid white;" src="/avatar.jpg">
+                    </div>
+                    <div class="my-card" style="text-align: left;padding: 30px;margin-top: -60px;z-index: 0">
+                        <div class="mdui-textfield mdui-textfield-floating-label">
+                            <label class="mdui-textfield-label">用户名</label>
+                            <input class="mdui-textfield-input" type="text" v-model="uname" required/>
+                        </div>
+                        <div class="mdui-textfield mdui-textfield-floating-label">
+                            <label class="mdui-textfield-label">密码</label>
+                            <input class="mdui-textfield-input" v-model="pass" type="password" required/>
+                        </div>
+                        <!--<div style="margin-top: 30px;text-align: left;z-index: 999">-->
+                            <!--<select class="role-selector" v-model="role">-->
+                                <!--<option value="user">用户</option>-->
+                                <!--<option value="admin">管理员</option>-->
+                            <!--</select>-->
+                        <!--</div>-->
+                        <div style="margin-top: 30px">
+                            <button class="mdui-btn mdui-ripple" style="background-color: #f50057;width: 100%;color: #fff;" @click="submitUserInfo">登录</button>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <a role="button" class="mdui-btn mdui-ripple" style="background-color: dodgerblue;width: 100%;color: white" href="/register/">创建你的账户</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = function (ev) {
+        var select = new mdui.Select("#selector")
+        axios.default.withCredentials = true
+        var getRequest = function (url,data,suc,fail) {
+            var key = localStorage.getItem("api_key")
+            axios.get(url,data,{headers:{"Authorization":key}}).then(suc).catch(fail)
+        }
+        var postRequest = function (url, data, suc, fail) {
+            var key = localStorage.getItem("api_key")
+            axios.post(url,data,{headers:{"Authorization":key}}).then(suc).catch(fail)
+        }
+        var app = new Vue({
+            el:'#login-window',
+            data:{
+                uname:'',
+                pass:'',
+                role:'user'
+            },
+            methods:{
+                submitUserInfo:function () {
+                    var vm = this
+                    postRequest('/api/login/',{
+                        uname:vm.uname,
+                        pass:vm.pass,
+                        role:vm.role
+                    },function (value) {
+                        if (value.data.code==200){
+                            localStorage.setItem("api_key",value.data.data)
+                            location = "/zone/"
+                        }else {
+                            // alert("登录失败: "+value.data.data)
+                            swal(value.data.msg,'','warning')
+                        }
+                    }, function (reason) {
+                        alert(reason)
+                        console.log(reason)
+                    })
+                }
+            }
+        })
+    }
+</script>
+
+</body>
+</html>

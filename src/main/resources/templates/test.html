@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    var ws
+    var sendMsg
+    window.onload = function (ev) {
+        ws = new WebSocket("ws://localhost:8080/start")
+        ws.onopen = function (ev2) {
+            console.log("连接开始")
+            ws.send("你好啊")
+        }
+        ws.onmessage = function (ev2) {
+            console.log("接收："+ev2.data)
+            document.getElementById("res").innerText += "\n"+ev2.data
+        }
+        ws.onclose = function (ev2) {
+            console.log("连接关闭")
+        }
+        sendMsg = function () {
+            var msg = document.getElementById("msg").value
+            ws.send(msg)
+            document.getElementById("msg").value = ""
+        }
+    }
+</script>
+<div>
+    <input id="msg">
+    <button onclick="sendMsg()">发送</button>
+    <button>关闭</button>
+</div>
+<div id="res"></div>
+
+<link rel="stylesheet" href="/dplayer/DPlayer.min.css">
+<div id="dplayer" style="width: 500px;"></div>
+<script src="/dplayer/DPlayer.min.js"></script>
+<script>
+    window.onload = function (ev) {
+        var dp = new DPlayer({
+            container:document.getElementById("dplayer"),
+            screenshot:true,
+            video:{
+                url: '/static/1a156a436a2d37e2343ac6bd9cda5686.mp4',
+                pic: '/static/banner.jpg'
+            },
+            danmaku:{
+                id: 8,
+                api: 'http://localhost:8080/api/danmaku/',
+                maximum: 10,
+                user: 18,
+            }
+        })
+    }
+</script>
+</body>
+</html>

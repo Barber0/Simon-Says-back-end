@@ -1,0 +1,43 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-thymeleaf-4.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Simon的世界</title>
+</head>
+<body>
+<link rel="stylesheet" href="/css/mdui.min.css">
+<link rel="stylesheet" href="/swal.min.css">
+<script src="/js/mdui.min.js"></script>
+<script src="/vue.js"></script>
+<script src="/axios.min.js"></script>
+<script src="/swal.min.js"></script>
+<style>
+    body{
+        background-color: #eff3f5;
+    }
+    .main-panel{
+        margin-top: 100px;
+        width: 350px;
+        height: 400px;
+    }
+    .headbar{
+        background-color: dodgerblue;
+        color: white;
+    }
+    .my-card{
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 0 5px gray;
+    }
+</style>
+
+<div class="mdui-toolbar headbar">
+    <a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">menu</i></a>
+    <span class="mdui-typo-title">Simon的世界</span>
+    <div class="mdui-toolbar-spacer"></div>
+</div>
+
+<div th:include="::content"></div>
+
+</body>
+</html>
